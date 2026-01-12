@@ -99,7 +99,7 @@
     
     <Modal Title="Nuevo Operador" IsVisible="@showModal" OnClose="CloseModal">
         <FormContent>
-            <EditForm>
+            <EditForm Model="newOperador" OnValidSubmit="SaveOperador">
 
             </EditForm>
         </FormContent>
