@@ -1,6 +1,6 @@
 ﻿@page "/operadores"
 
-<div id="operatorsSection" class="hidden">
+<div id="operatorsSection">
     <div class="page-header">
         <h1 class="page-title">Gestión de Operadores</h1>
         <p class="page-subtitle">Administra el equipo de cobranza</p>
@@ -15,7 +15,7 @@
 
     <Card Title="Lista Operadores">
         <HeaderAction>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" @onclick="OpenModal">
                 <i class="fas fa-plus"></i> Nuevo Operador
             </button>
         </HeaderAction>
@@ -34,16 +34,129 @@
                             <th style="width:150px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-
-                    </tbody>
+                    @foreach(var op in operadores)
+                    {
+                        <tbody>
+                            <td><input type="checkbox"/></td>
+                            <td>
+                                <div class="debtor-info">
+                                    <div class="debtor-avatar" style="background:@op.AvatarColor">
+                                        @op.FirstName[0]@op.LastName[0]
+                                    </div>
+                                    <div class="debtor-details">
+                                        <h4>@op.FirstName @op.LastName</h4>
+                                        <p>Código: @op.Code</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="contact-info">
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>@op.Email</span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone"></i>
+                                        <span>@op.Phone</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-size:20px; font-weight:700; color:#163370;">@op.Campaigns</div>
+                                <div style="font-size:13px; color:#64748b;">campañas asignadas</div>
+                            </td>
+                            <td>
+                                <div style="font-size:18px; font-weight:600; color:#163370;">@op.ContactsToday</div>
+                                <div style="font-size:12px; color:#64748b;">contactos</div>
+                            </td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap: 8px;">
+                                    <div style="flex:1; background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden">
+                                        <div style="width:@op.SuccessRate%; height: 100%; background: @(op.SuccessRate > 75 ? "#10b981":"#f59e0b"); transition:width 0.3s"></div>
+                                    </div>
+                                    <span style="font-weigth:600; color:#163370; min-width:40px;">@op.SuccessRate%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="history-badge @(op.Status == "active" ? "success":"")">@op.StatusText</span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn" style="background:#dbeafe; color:#1e40af; title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn" style="background:#fee2e2; color:#991b1b; title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                    </tbody>    
+                    }
                 </table>
             </div>
         </ChildContent>
     </Card>
     
+    <Modal Title="Nuevo Operador" IsVisible="@showModal" OnClose="CloseModal">
+        <FormContent>
+            <EditForm>
+
+            </EditForm>
+        </FormContent>
+    </Modal>
 </div>
 
 @code {
+    private bool showModal = false;
+    public List<Operador> operadores { get; set; } = new();
+    private Operador newOperador = new();
 
-}
+    protected override void OnInitialized()
+    {
+        var operador1 = new Operador
+            {
+                Id = 1,
+                FirstName = "María",
+                LastName = "Rodríguez",
+                Email = "maria.rodriguez@empresa.com",
+                Phone = "+1 (555) 234-5678",
+                Code = "OP-001",
+                Status = "active",
+                StatusText = "Activo",
+                Campaigns = 2,
+                ContactsToday = 42,
+                SuccessRate = 78,
+                AvatarColor = "#ef4444"
+            };
+
+        operadores.Add(operador1);
+
+        var operador2 = new Operador
+            {
+                Id = 5,
+                FirstName = "Ana",
+                LastName = "Martínez",
+                Email = "ana.martinez@empresa.com",
+                Phone = "+1 (555) 432-8765",
+                Code = "OP-005",
+                Status = "inactive",
+                StatusText = "Inactivo",
+                Campaigns = 0,
+                ContactsToday = 0,
+                SuccessRate = 71,
+                AvatarColor = "#06b6d4"
+            };
+
+        operadores.Add(operador2);
+    }
+
+    private void OpenModal() => showModal = true;
+
+    private void CloseModal() => showModal = false;
+
+    private async Task SaveOperador()
+    {
+        operadores.Add(newOperador);
+        showModal = false;
+    }
+ }
