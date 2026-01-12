@@ -1,0 +1,49 @@
+﻿@page "/operadores"
+
+<div id="operatorsSection" class="hidden">
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Operadores</h1>
+        <p class="page-subtitle">Administra el equipo de cobranza</p>
+    </div>
+
+    <div class="metrics-grid">
+        <Metric Label="Total Operadores" Value="8" Change="+2 este mes"/>
+        <Metric Label="Operadores Activos" Value="6" Change="En campañas activas"/>
+        <Metric Label="Promedio Contactos/Día" Value="38" Change="+8% esta semana"/>
+        <Metric Label="Tasa Éxito Promedio" Value="72%" Change="+4% este mes"/>
+    </div>
+
+    <Card Title="Lista Operadores">
+        <HeaderAction>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nuevo Operador
+            </button>
+        </HeaderAction>
+        <ChildContent>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:40px;"><input type="checkbox"/></th>
+                            <th>Operador</th>
+                            <th>Contacto</th>
+                            <th>Campañas activas</th>
+                            <th>Contactos hoy</th>
+                            <th>Tasa de éxito</th>
+                            <th>Estado</th>
+                            <th style="width:150px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </ChildContent>
+    </Card>
+    
+</div>
+
+@code {
+
+}
