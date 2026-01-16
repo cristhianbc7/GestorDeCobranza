@@ -1,5 +1,7 @@
 ﻿@page "/operadores"
 
+@implements IDisposable
+
 <div id="operatorsSection">
     <div class="page-header">
         <h1 class="page-title">Gestión de Operadores</h1>
@@ -34,62 +36,64 @@
                             <th style="width:150px;">Acciones</th>
                         </tr>
                     </thead>
-                    @foreach(var op in operadores)
+                    @foreach(var op in operadores.Where(o => o.Status != "deleted"))
                     {
                         <tbody>
-                            <td><input type="checkbox"/></td>
-                            <td>
-                                <div class="debtor-info">
-                                    <div class="debtor-avatar" style="background:@op.AvatarColor">
-                                    @(string.IsNullOrEmpty(op.FirstName) ? "" : op.FirstName[0].ToString())@(string.IsNullOrEmpty(op.LastName) ? "" : op.LastName[0].ToString())
+                            <tr>
+                                <td><input type="checkbox"/></td>
+                                <td>
+                                    <div class="debtor-info">
+                                        <div class="debtor-avatar" style="background:@op.AvatarColor">
+                                        @(string.IsNullOrEmpty(op.FirstName) ? "" : op.FirstName[0].ToString())@(string.IsNullOrEmpty(op.LastName) ? "" : op.LastName[0].ToString())
+                                        </div>
+                                        <div class="debtor-details">
+                                            <h4>@op.FirstName @op.LastName</h4>
+                                            <p>Código: @op.Code</p>
+                                        </div>
                                     </div>
-                                    <div class="debtor-details">
-                                        <h4>@op.FirstName @op.LastName</h4>
-                                        <p>Código: @op.Code</p>
+                                </td>
+                                <td>
+                                    <div class="contact-info">
+                                        <div class="contact-item">
+                                            <i class="fas fa-envelope"></i>
+                                            <span>@op.Email</span>
+                                        </div>
+                                        <div class="contact-item">
+                                            <i class="fas fa-phone"></i>
+                                            <span>@op.Phone</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="contact-info">
-                                    <div class="contact-item">
-                                        <i class="fas fa-envelope"></i>
-                                        <span>@op.Email</span>
+                                </td>
+                                <td>
+                                    <div style="font-size:20px; font-weight:700; color:#163370;">@op.Campaigns</div>
+                                    <div style="font-size:13px; color:#64748b;">campañas asignadas</div>
+                                </td>
+                                <td>
+                                    <div style="font-size:18px; font-weight:600; color:#163370;">@op.ContactsToday</div>
+                                    <div style="font-size:12px; color:#64748b;">contactos</div>
+                                </td>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap: 8px;">
+                                        <div style="flex:1; background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden">
+                                            <div style="width:@op.SuccessRate%; height: 100%; background: @(op.SuccessRate > 75 ? "#10b981":"#f59e0b"); transition:width 0.3s"></div>
+                                        </div>
+                                        <span style="font-weight:600; color:#163370; min-width:40px;">@op.SuccessRate%</span>
                                     </div>
-                                    <div class="contact-item">
-                                        <i class="fas fa-phone"></i>
-                                        <span>@op.Phone</span>
+                                </td>
+                                <td>
+                                    <span class="history-badge @(op.Status == "active" ? "success":"")">@op.StatusText</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn" style="background:#dbeafe; color:#1e40af"; title="Editar" @onclick="() => EditOperador(op)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn" style="background:#fee2e2; color:#991b1b"; title="Eliminar" @onclick="() => PromptDelete(op)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size:20px; font-weight:700; color:#163370;">@op.Campaigns</div>
-                                <div style="font-size:13px; color:#64748b;">campañas asignadas</div>
-                            </td>
-                            <td>
-                                <div style="font-size:18px; font-weight:600; color:#163370;">@op.ContactsToday</div>
-                                <div style="font-size:12px; color:#64748b;">contactos</div>
-                            </td>
-                            <td>
-                                <div style="display:flex; align-items:center; gap: 8px;">
-                                    <div style="flex:1; background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden">
-                                        <div style="width:@op.SuccessRate%; height: 100%; background: @(op.SuccessRate > 75 ? "#10b981":"#f59e0b"); transition:width 0.3s"></div>
-                                    </div>
-                                    <span style="font-weight:600; color:#163370; min-width:40px;">@op.SuccessRate%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="history-badge @(op.Status == "active" ? "success":"")">@op.StatusText</span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn" style="background:#dbeafe; color:#1e40af"; title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn" style="background:#fee2e2; color:#991b1b"; title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
+                                </td>
+                            </tr>
                         </tbody>    
                     }
                 </table>
@@ -97,7 +101,7 @@
         </ChildContent>
     </Card>
     
-    <Modal Title="Nuevo Operador" IsVisible="@showModal" OnClose="CloseModal">
+    <Modal Title="@(isEditing ? "Editar Operador":"Nuevo Operador")" IsVisible="@showModal" OnClose="CloseModal">
         <FormContent>
             <EditForm Model="newOperador" OnValidSubmit="SaveOperador">
                 <div class="modal-section">
@@ -141,26 +145,88 @@
                         </div>
                     </div>
                 </div>
+
+                @if(isEditing)
+                {
+                    <div class="modal-section">
+                        <div class="modal-section-title">
+                            <i class="fas fa-circle-check"></i>Estado del Operador
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div style="display:flex; align-items:center; gap:12px; padding: 12px; border-radius: 8px;">
+                                <span style="font-size: 14px; color: @(newOperador.Status == "active" ? "#10b981" : "#64748b"); font-weight: 600;">
+                                    @(newOperador.Status == "active" ? "ACTIVO" : "INACTIVO")
+                                </span>
+                                
+                                <label class="switch">
+                                    <input type="checkbox" checked="@(newOperador.Status == "active")" 
+                                        @onchange="@((e) => ToggleStatus(e))">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        @if(newOperador.Status == "inactive")
+                        {
+                            
+                            <div class="status-warning-note">
+                                <i class="fas fa-info-circle"></i>
+                                <span>El operador no podrá ser asignado a nuevas campañas mientres esté inactivo</span>
+                            </div>
+                            
+                        }
+                    </div>
+                }
+
                 <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:32px;">
                     <button class="btn btn-secondary" @onclick="CloseModal" type="button">
                         <i class="fas fa-times"></i>Cancelar
                     </button>
-                    <button class="btn btn-primary" @onclick="SaveOperador" type="submit">
+                    <button class="btn btn-primary" type="submit">
                         <i class="fas fa-check"></i>Guardar
                     </button>
                 </div>
             </EditForm>
         </FormContent>
     </Modal>
+
+    <Modal Title="Eliminar Operador" IsVisible="@showDeleteModal" OnClose="CloseModal" Model="selectedOperador">
+        <FormContent>
+            <div class="modal-section">
+                <div class="modal-section-title">
+                    <i class="fas fa-trash"></i>Confirmar eliminación
+                </div>
+                <div class="form-group">
+                    <p>¿Estás seguro de que deseas eliminar al operador <span style="font-weight: bold;">@(selectedOperador?.FirstName ?? "Desconocido") @(selectedOperador?.LastName ?? "")</span>?</p>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:32px;">
+                <button class="btn btn-secondary" @onclick="CloseModal" type="button">
+                    <i class="fas fa-times"></i>Cancelar
+                </button>
+                <button class="btn btn-primary" @onclick="DeleteOperador" type="button">
+                    <i class="fas fa-trash"></i>Eliminar
+                </button>
+            </div>
+        </FormContent>
+    </Modal>
+
 </div>
 
 @code {
     private bool showModal = false;
+    private bool showDeleteModal = false;
+    private bool isEditing = false;
     public List<Operador> operadores { get; set; } = new();
     private Operador newOperador = new();
+    private Operador? selectedOperador;
+    private CancellationTokenSource? _cts;
 
     protected override void OnInitialized()
     {
+        _cts = new CancellationTokenSource();
         var operador1 = new Operador
             {
                 Id = 1,
@@ -198,9 +264,19 @@
         operadores.Add(operador2);
     }
 
-    private void OpenModal() => showModal = true;
+    private void OpenModal() {
+        isEditing = false;
+        newOperador = new Operador();
+        showModal = true;
+    }
 
-    private void CloseModal() => showModal = false;
+    private void CloseModal() 
+    {
+        showModal = false;
+        showDeleteModal = false;
+        newOperador = new Operador();
+        selectedOperador = null;
+    }
 
     private async Task SaveOperador()
     {
@@ -209,7 +285,17 @@
             return;
         }
 
-        var operadorToAdd = new Operador
+        if(isEditing)
+        {
+            var index = operadores.FindIndex(o => o.Id == newOperador.Id);
+
+            if(index != -1)
+            {
+                operadores[index] = newOperador;
+            }
+        }
+        else {
+            var operadorToAdd = new Operador
             {
                 Id = operadores.Count + 1,
                 FirstName = newOperador.FirstName,
@@ -223,12 +309,62 @@
                 ContactsToday = 0,
                 SuccessRate = 0,
                 AvatarColor = AvatarColorGenerator.GetColor(newOperador.FirstName, newOperador.LastName)
-        
+            };
+
+            operadores.Add(operadorToAdd);
+        }
+
+        CloseModal();
+    }
+
+    private void EditOperador(Operador op)
+    {
+        isEditing = true;
+        newOperador = new Operador {
+            Id = op.Id,
+            FirstName = op.FirstName,
+            LastName = op.LastName,
+            Email = op.Email,
+            Phone = op.Phone,
+            Code = op.Code,
+            Status = op.Status,
+            StatusText = op.StatusText,
+            Campaigns = op.Campaigns,
+            ContactsToday = op.ContactsToday,
+            SuccessRate = op.SuccessRate,
+            AvatarColor = op.AvatarColor
         };
 
-        operadores.Add(operadorToAdd);
-
-        newOperador = new Operador();
-        showModal = false;
+        showModal = true;
     }
- }
+
+    private void ToggleStatus(ChangeEventArgs e) 
+    {
+        bool isActive = (bool)e.Value;
+        newOperador.Status = isActive ? "active" : "inactive";
+        newOperador.StatusText = isActive ? "Activo" : "Inactivo";
+    }
+
+    private void PromptDelete(Operador op)
+    {
+        selectedOperador = op;
+        showDeleteModal = true;
+    }
+
+    private void DeleteOperador()
+    {
+        if (selectedOperador != null)
+        {
+            selectedOperador.Status = "deleted";
+            selectedOperador.StatusText = "Eliminado";
+            selectedOperador = null;
+        }
+        CloseModal();
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+}
