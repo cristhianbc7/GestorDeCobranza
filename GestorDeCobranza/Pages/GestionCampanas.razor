@@ -2,16 +2,34 @@
 @using GestorDeCobranza.Model
 
 <div id="campaignsSection">
-    <div class="page-header">
-        <h1 class="page-title">Gestión de Campañas</h1>
-        <p class="page-subtitle">Administra y monitorea tus campañas de cobranza</p>
+    @* --- Cabecera --- *@
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h1 class="page-title">Gestión de Campañas</h1>
+            <p class="page-subtitle">Administra y monitorea tus campañas de cobranza</p>
+        </div>
+        @* --- FILTRO POR AÑO --- *@
+        <div style="background: white; padding: 8px 16px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px;">
+            <label style="font-weight: 600; color: #163370; font-size: 14px;">Gestión:</label>
+            <select class="form-select" @bind="filtroAnio" style="width: auto; border: none; font-weight: 700; color: #163370; cursor: pointer;">
+                @foreach (var anio in aniosDisponibles)
+                {
+                    <option value="@anio">@anio</option>
+                }
+            </select>
+        </div>
     </div>
+
+
+    @* --- Métricas (Usando el componente Metric.razor) --- *@
     <div class="metrics-grid">
         <Metric Label="Total Campañas" Value="@campanas.Count.ToString()" Change="+1 esta semana" />
         <Metric Label="Campañas Activas" Value="@campanas.Count(c => c.Estado == "activa").ToString()" Change="En curso" />
         <Metric Label="Meta Promedio" Value="75%" Change="+5% vs mes anterior" />
         <Metric Label="Recaudación Total" Value="$12.5k" Change="+12%" />
     </div>
+
+    @* --- Tabla de Campañas --- *@
     <Card Title="Lista de Campañas">
         <HeaderAction>
             <button class="btn btn-primary" @onclick="OpenModal">
@@ -32,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var camp in campanas)
+                        @foreach (var camp in campanasFiltradas)
                         {
                             <tr>
                                 <td>
@@ -72,6 +90,8 @@
             </div>
         </ChildContent>
     </Card>
+
+    @* --- Modal para Nueva Campaña --- *@
     <Modal Title="Nueva Campaña" IsVisible="@showModal" OnClose="CloseModal">
         <FormContent>
             <EditForm Model="nuevaCampana" OnValidSubmit="SaveCampana">
@@ -101,12 +121,18 @@
 </div>
 
 @code {
+    private int filtroAnio { get; set; } = DateTime.Now.Year;
+    private List<int> aniosDisponibles = new() { 2023, 2024, 2025, 2026 };
+    private List<Campana> campanasFiltradas => campanas
+        .Where(c => c.FechaInicio.Year == filtroAnio)
+        .ToList();
     private bool showModal = false;
     private List<Campana> campanas = new();
     private Campana nuevaCampana = new();
 
     protected override void OnInitialized()
     {
+        // Datos de ejemplo iniciales (como hiciste en Operadores)
         campanas.Add(new Campana
         {
             Id = 1,
