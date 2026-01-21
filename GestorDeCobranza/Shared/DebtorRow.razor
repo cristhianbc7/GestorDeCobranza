@@ -1,0 +1,154 @@
+﻿@using System.Globalization
+<tr>
+    <td><input type="checkbox" /></td>
+    <td>
+        <div class="debtor-info">
+            <div class="debtor-avatar" style="background: @Item.AvatarColor;">
+                <span>@Item.Initials</span>
+            </div>
+            <div class="debtor-details">
+                <h4>@Item.Name</h4>
+                <p>ID: @Item.IdNumber</p>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>@Item.Phone</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>@Item.Email</span>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="debt-amount">
+            <span>$@Item.Debt.ToString("N2", new CultureInfo("en-US"))</span>
+        </div>
+        <div class="debt-period">
+            <span>@Item.Period</span>
+        </div>
+        <div class="priority-badge priority-@Item.Priority">
+            <span>@Item.PriorityText</span>
+        </div>
+    </td>
+    <td>
+        <Dropdown TItem="string" Items="@statusOptions" Placeholder="Seleccionar estado" SelectedItem="@Item.Status"
+            OnItemSelected="(status) => OnStatusSelectedForDebtor(Item, status)">
+            <ItemTemplate Context="status">
+                @GetStatusText(status)
+            </ItemTemplate>
+        </Dropdown>
+    </td>
+    <td>
+        <div style="font-weight: 600; margin-bottom: 4px;">
+            @Item.LastContact
+        </div>
+        <div style="font-size: 13px; color: #64748b;">
+            @Item.ContactMethod
+        </div>
+    </td>
+    <td>
+        <div class="action-buttons">
+            <button class="action-btn phone" title="Llamar">
+                <i class="fas fa-phone"></i>
+            </button>
+            <button class="action-btn whatsapp" title="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+            </button>
+            <button class="action-btn email" title="Email">
+                <i class="fas fa-envelope"></i>
+            </button>
+            <button class="action-btn expand-btn" title="Ver más" @onclick="ToggleExpansion">
+                <i class="fas @(Item.IsExpanded ? "fa-chevron-up" : "fa-chevron-down")"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+
+@if (Item.IsExpanded)
+{
+
+    <td colspan="7">
+        <div class="expanded-content">
+            <div class="expanded-grid">
+                <div class="expanded-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Detalles de Facturación</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 13px; color:#64748b;">Deuda Total</div>
+                            <div style="font-size: 24px; font-weight: 700; color:#163370">$@Item.Debt.ToString("N2", new
+                                                            CultureInfo("en-US"))</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 13px; color:#64748b;">Monto Original</div>
+                            <div style="font-size: 24px; font-weight: 700; color:#64748b;">$@((Item.Debt *
+                                                            0.85).ToString("N2", new CultureInfo("en-US")))</div>
+                        </div>
+                    </div>
+                    <div
+                        style="font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-info-circle"></i>
+                        <span>FACTURAS PENDIENTES (Click para ver detalles)</span>
+                    </div>
+                    <div class="invoice-list">
+                        @foreach (var invoice in Item.Invoices)
+                        {
+                            <InvoiceDetail Item="@invoice" isOpen="invoice == facturaAbierta"
+                                OnToggleRequested="HandleInvoiceAccordion" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </td>
+}
+
+@code {
+    [Parameter]
+    public Deudor Item { get; set; } = null!;
+    private Invoice? facturaAbierta;
+    private List<string> statusOptions = new() { "in-progress", "not-contacted", "promised", "unreachable" };
+
+    private void ToggleExpansion()
+    {
+        Item.IsExpanded = !Item.IsExpanded;
+    }
+
+    private void OnStatusSelectedForDebtor(Deudor debtor, string status)
+    {
+        debtor.Status = status;
+        debtor.StatusText = GetStatusText(status);
+    }
+
+    private string GetStatusText(string status)
+    {
+        return status switch
+        {
+            "not-contacted" => "No Contactado",
+            "in-progress" => "En Progreso",
+            "contacted" => "Contactado",
+            "promised" => "Pago Prometido",
+            "unreachable" => "No Localizable",
+            _ => status
+        };
+    }
+
+    private void HandleInvoiceAccordion(Invoice facturaClickeada)
+    {
+        if (facturaAbierta == facturaClickeada)
+        {
+            facturaAbierta = null;
+        }
+        else
+        {
+            facturaAbierta = facturaClickeada;
+        }
+    }
+}

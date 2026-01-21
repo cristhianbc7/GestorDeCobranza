@@ -1,0 +1,64 @@
+﻿@using System.Globalization
+@if (Item is not null)
+{
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="invoice-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Error: @errorMessage</span>
+        </div>
+    }
+
+    <div class="invoice-item-wrapper">
+        <div class="invoice-item" @onclick="RequestToggle">
+            <div class="invoice-info">
+                <i class="fas @(isOpen ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                <span>Factura #@Item.Number - @Item.Date</span>
+            </div>
+            <strong>$@Item.Total.ToString("N2", new CultureInfo("en-US"))</strong>
+        </div>
+        @if (isOpen)
+        {
+            <div class="invoice-details show">
+                @foreach (var subitem in Item.SubItems ?? new List<InvoiceItem>())
+                {
+                    <div class="invoice-subitem">
+                        <div class="invoice-subitem-name">
+                            <i class="fas @subitem.Icon"></i>
+                            <span>@subitem.Name</span>
+                        </div>
+                        <div class="invoice-subitem-amount">$@subitem.Amount.ToString("N2", new CultureInfo("en-US"))</div>
+                    </div>
+                }
+                <div class="invoice-total">
+                    <span>Total Factura</span>
+                    <span>$@Item.Total.ToString("N2", new CultureInfo("en-US"))</span>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public Invoice? Item { get; set; }
+    [Parameter]
+    public bool isOpen { get; set; }
+    [Parameter]
+    public EventCallback<Invoice> OnToggleRequested { get; set; }
+    private string? errorMessage;
+
+    private async Task RequestToggle()
+    {
+        try
+        {
+            if (Item == null) return;
+            await OnToggleRequested.InvokeAsync(Item);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            StateHasChanged();
+        }
+    }
+}
