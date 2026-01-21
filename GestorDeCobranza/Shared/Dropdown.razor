@@ -1,0 +1,61 @@
+@typeparam TItem
+
+<div class="status-dropdown @(isOpen ? "open" : "")">
+    <button class="status-button @GetStatusClass(SelectedItem)" @onclick="ToggleDropdown">
+        @if (SelectedItem == null)
+        {
+            <span>@Placeholder</span>
+        }
+        else
+        {
+            <span class="status-dot @GetStatusClass(SelectedItem)"></span>
+            <span>@ItemTemplate(SelectedItem)</span>
+        }
+    </button>
+
+    @if (isOpen)
+    {
+        <div class="status-dropdown-menu">
+            @foreach (var item in Items)
+            {
+                <div class="status-option" @onclick="() => SelectItem(item)">
+                    <span class="status-dot @GetStatusClass(item)"></span>
+                    @ItemTemplate(item)
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; }
+    [Parameter]
+    public string Placeholder { get; set; } = "Seleccionar...";
+    [Parameter]
+    public RenderFragment<TItem> ItemTemplate { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnItemSelected { get; set; }
+    [Parameter]
+    public TItem SelectedItem { get; set; }
+
+    private bool isOpen = false;
+
+    private void ToggleDropdown() => isOpen = !isOpen;
+
+    private async Task SelectItem(TItem item)
+    {
+        SelectedItem = item;
+        isOpen = false;
+        await OnItemSelected.InvokeAsync(item);
+    }
+
+    private string GetStatusClass(TItem item)
+    {
+        if (item is string status && !string.IsNullOrEmpty(status))
+        {
+            return status.ToLower().Replace(" ", "-");
+        }
+        return "";
+    }
+}

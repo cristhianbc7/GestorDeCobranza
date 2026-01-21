@@ -9,10 +9,10 @@
     </div>
 
     <div class="metrics-grid">
-        <Metric Label="Total Operadores" Value="8" Change="+2 este mes"/>
-        <Metric Label="Operadores Activos" Value="6" Change="En campañas activas"/>
-        <Metric Label="Promedio Contactos/Día" Value="38" Change="+8% esta semana"/>
-        <Metric Label="Tasa Éxito Promedio" Value="72%" Change="+4% este mes"/>
+        <Metric Label="Total Operadores" Value="8" Change="+2 este mes" />
+        <Metric Label="Operadores Activos" Value="6" Change="En campañas activas" />
+        <Metric Label="Promedio Contactos/Día" Value="38" Change="+8% esta semana" />
+        <Metric Label="Tasa Éxito Promedio" Value="72%" Change="+4% este mes" />
     </div>
 
     <Card Title="Lista Operadores">
@@ -26,7 +26,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:40px;"><input type="checkbox"/></th>
+                            <th style="width:40px;"><input type="checkbox" /></th>
                             <th>Operador</th>
                             <th>Contacto</th>
                             <th>Campañas activas</th>
@@ -36,15 +36,17 @@
                             <th style="width:150px;">Acciones</th>
                         </tr>
                     </thead>
-                    @foreach(var op in operadores.Where(o => o.Status != "deleted"))
+                    @foreach (var op in operadores.Where(o => o.Status != "deleted"))
                     {
                         <tbody>
                             <tr>
-                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox" /></td>
                                 <td>
                                     <div class="debtor-info">
                                         <div class="debtor-avatar" style="background:@op.AvatarColor">
-                                        @(string.IsNullOrEmpty(op.FirstName) ? "" : op.FirstName[0].ToString())@(string.IsNullOrEmpty(op.LastName) ? "" : op.LastName[0].ToString())
+                                            @(string.IsNullOrEmpty(op.FirstName) ? "" :
+                                                                                    op.FirstName[0].ToString())@(string.IsNullOrEmpty(op.LastName) ? "" :
+                                                                                    op.LastName[0].ToString())
                                         </div>
                                         <div class="debtor-details">
                                             <h4>@op.FirstName @op.LastName</h4>
@@ -74,34 +76,41 @@
                                 </td>
                                 <td>
                                     <div style="display:flex; align-items:center; gap: 8px;">
-                                        <div style="flex:1; background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden">
-                                            <div style="width:@op.SuccessRate%; height: 100%; background: @(op.SuccessRate > 75 ? "#10b981":"#f59e0b"); transition:width 0.3s"></div>
+                                        <div
+                                            style="flex:1; background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden">
+                                            <div
+                                                style="width:@op.SuccessRate%; height: 100%; background: @(op.SuccessRate > 75 ? "#10b981" : "#f59e0b"); transition:width 0.3s">
+                                            </div>
                                         </div>
-                                        <span style="font-weight:600; color:#163370; min-width:40px;">@op.SuccessRate%</span>
+                                        <span
+                                            style="font-weight:600; color:#163370; min-width:40px;">@op.SuccessRate%</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="history-badge @(op.Status == "active" ? "success":"")">@op.StatusText</span>
+                                    <span
+                                        class="history-badge @(op.Status == "active" ? "success" : "")">@op.StatusText</span>
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="action-btn" style="background:#dbeafe; color:#1e40af"; title="Editar" @onclick="() => EditOperador(op)">
+                                        <button class="action-btn" style="background:#dbeafe; color:#1e40af" ;
+                                            title="Editar" @onclick="() => EditOperador(op)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="action-btn" style="background:#fee2e2; color:#991b1b"; title="Eliminar" @onclick="() => PromptDelete(op)">
+                                        <button class="action-btn" style="background:#fee2e2; color:#991b1b" ;
+                                            title="Eliminar" @onclick="() => PromptDelete(op)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                        </tbody>    
+                        </tbody>
                     }
                 </table>
             </div>
         </ChildContent>
     </Card>
-    
-    <Modal Title="@(isEditing ? "Editar Operador":"Nuevo Operador")" IsVisible="@showModal" OnClose="CloseModal">
+
+    <Modal Title="@(isEditing ? "Editar Operador" : "Nuevo Operador")" IsVisible="@showModal" OnClose="CloseModal">
         <FormContent>
             <EditForm Model="newOperador" OnValidSubmit="SaveOperador">
                 <div class="modal-section">
@@ -114,18 +123,20 @@
                             <label class="form-label">Nombre</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <InputText class="form-input" @bind-Value="newOperador.FirstName" id="operatorFirstName" placeholder="Ej: María" />
+                                <InputText class="form-input" @bind-Value="newOperador.FirstName" id="operatorFirstName"
+                                    placeholder="Ej: María" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Apellido</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <InputText class="form-input" @bind-Value="newOperador.LastName" id="operatorLastName" placeholder="Ej: Rodríguez" />
+                                <InputText class="form-input" @bind-Value="newOperador.LastName" id="operatorLastName"
+                                    placeholder="Ej: Rodríguez" />
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <div class="modal-section">
                     <div class="modal-section-title">
                         <i class="fas fa-address-card"></i>Información de Contacto
@@ -134,19 +145,21 @@
                         <label class="form-label">Email</label>
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
-                            <InputText class="form-input" @bind-Value="newOperador.Email" id="operatorEmail" placeholder="operador@empresa.com" />
+                            <InputText class="form-input" @bind-Value="newOperador.Email" id="operatorEmail"
+                                placeholder="operador@empresa.com" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Teléfono</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            <InputText class="form-input" @bind-Value="newOperador.Phone" id="operatorPhone" placeholder="+1 (555) 123-4567" />
+                            <InputText class="form-input" @bind-Value="newOperador.Phone" id="operatorPhone"
+                                placeholder="+1 (555) 123-4567" />
                         </div>
                     </div>
                 </div>
 
-                @if(isEditing)
+                @if (isEditing)
                 {
                     <div class="modal-section">
                         <div class="modal-section-title">
@@ -155,26 +168,27 @@
                         <div class="form-group">
                             <label class="form-label"></label>
                             <div style="display:flex; align-items:center; gap:12px; padding: 12px; border-radius: 8px;">
-                                <span style="font-size: 14px; color: @(newOperador.Status == "active" ? "#10b981" : "#64748b"); font-weight: 600;">
+                                <span
+                                    style="font-size: 14px; color: @(newOperador.Status == "active" ? "#10b981" : "#64748b"); font-weight: 600;">
                                     @(newOperador.Status == "active" ? "ACTIVO" : "INACTIVO")
                                 </span>
-                                
+
                                 <label class="switch">
-                                    <input type="checkbox" checked="@(newOperador.Status == "active")" 
+                                    <input type="checkbox" checked="@(newOperador.Status == "active")"
                                         @onchange="@((e) => ToggleStatus(e))">
                                     <span class="slider round"></span>
                                 </label>
                             </div>
                         </div>
-                        
-                        @if(newOperador.Status == "inactive")
+
+                        @if (newOperador.Status == "inactive")
                         {
-                            
+
                             <div class="status-warning-note">
                                 <i class="fas fa-info-circle"></i>
                                 <span>El operador no podrá ser asignado a nuevas campañas mientres esté inactivo</span>
                             </div>
-                            
+
                         }
                     </div>
                 }
@@ -198,7 +212,9 @@
                     <i class="fas fa-trash"></i>Confirmar eliminación
                 </div>
                 <div class="form-group">
-                    <p>¿Estás seguro de que deseas eliminar al operador <span style="font-weight: bold;">@(selectedOperador?.FirstName ?? "Desconocido") @(selectedOperador?.LastName ?? "")</span>?</p>
+                    <p>¿Estás seguro de que deseas eliminar al operador <span
+                            style="font-weight: bold;">@(selectedOperador?.FirstName ?? "Desconocido")
+                            @(selectedOperador?.LastName ?? "")</span>?</p>
                 </div>
             </div>
 
@@ -228,49 +244,50 @@
     {
         _cts = new CancellationTokenSource();
         var operador1 = new Operador
-            {
-                Id = 1,
-                FirstName = "María",
-                LastName = "Rodríguez",
-                Email = "maria.rodriguez@empresa.com",
-                Phone = "+1 (555) 234-5678",
-                Code = "OP-001",
-                Status = "active",
-                StatusText = "Activo",
-                Campaigns = 2,
-                ContactsToday = 42,
-                SuccessRate = 78,
-                AvatarColor = "#ef4444"
-            };
+        {
+            Id = 1,
+            FirstName = "María",
+            LastName = "Rodríguez",
+            Email = "maria.rodriguez@empresa.com",
+            Phone = "+1 (555) 234-5678",
+            Code = "OP-001",
+            Status = "active",
+            StatusText = "Activo",
+            Campaigns = 2,
+            ContactsToday = 42,
+            SuccessRate = 78,
+            AvatarColor = "#ef4444"
+        };
 
         operadores.Add(operador1);
 
         var operador2 = new Operador
-            {
-                Id = 5,
-                FirstName = "Ana",
-                LastName = "Martínez",
-                Email = "ana.martinez@empresa.com",
-                Phone = "+1 (555) 432-8765",
-                Code = "OP-005",
-                Status = "inactive",
-                StatusText = "Inactivo",
-                Campaigns = 0,
-                ContactsToday = 0,
-                SuccessRate = 71,
-                AvatarColor = "#06b6d4"
-            };
+        {
+            Id = 5,
+            FirstName = "Ana",
+            LastName = "Martínez",
+            Email = "ana.martinez@empresa.com",
+            Phone = "+1 (555) 432-8765",
+            Code = "OP-005",
+            Status = "inactive",
+            StatusText = "Inactivo",
+            Campaigns = 0,
+            ContactsToday = 0,
+            SuccessRate = 71,
+            AvatarColor = "#06b6d4"
+        };
 
         operadores.Add(operador2);
     }
 
-    private void OpenModal() {
+    private void OpenModal()
+    {
         isEditing = false;
         newOperador = new Operador();
         showModal = true;
     }
 
-    private void CloseModal() 
+    private void CloseModal()
     {
         showModal = false;
         showDeleteModal = false;
@@ -280,21 +297,22 @@
 
     private async Task SaveOperador()
     {
-        if(string.IsNullOrWhiteSpace(newOperador.FirstName) || string.IsNullOrWhiteSpace(newOperador.LastName))
+        if (string.IsNullOrWhiteSpace(newOperador.FirstName) || string.IsNullOrWhiteSpace(newOperador.LastName))
         {
             return;
         }
 
-        if(isEditing)
+        if (isEditing)
         {
             var index = operadores.FindIndex(o => o.Id == newOperador.Id);
 
-            if(index != -1)
+            if (index != -1)
             {
                 operadores[index] = newOperador;
             }
         }
-        else {
+        else
+        {
             var operadorToAdd = new Operador
             {
                 Id = operadores.Count + 1,
@@ -320,7 +338,8 @@
     private void EditOperador(Operador op)
     {
         isEditing = true;
-        newOperador = new Operador {
+        newOperador = new Operador
+        {
             Id = op.Id,
             FirstName = op.FirstName,
             LastName = op.LastName,
@@ -338,9 +357,9 @@
         showModal = true;
     }
 
-    private void ToggleStatus(ChangeEventArgs e) 
+    private void ToggleStatus(ChangeEventArgs e)
     {
-        bool isActive = (bool)e.Value;
+        bool isActive = e.Value != null && (bool)e.Value;
         newOperador.Status = isActive ? "active" : "inactive";
         newOperador.StatusText = isActive ? "Activo" : "Inactivo";
     }

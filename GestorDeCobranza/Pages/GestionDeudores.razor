@@ -1,7 +1,97 @@
 ﻿@page "/gestiondeudores"
 
-<h3>GestionDeudores</h3>
+<div id="debtorsSection">
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Deudores</h1>
+        <p class="page-subtitle">Campaña Q1-2024 • Termina en 12 días</p>
+    </div>
+
+    <div class="metrics-grid">
+        <Metric Label="Contactos Hoy" Value="24" Change="Meta: 45 llamadas" />
+        <Metric Label="Promesas de Pago" Value="12" Change="+3 esta semana" />
+        <Metric Label="Recuperado" Value="$8,450" Change="15% de meta" />
+        <Metric Label="Casos Pendientes" Value="38" Change="Por contactar" />
+    </div>
+
+    <Card Title="Lista de Deudores">
+        <HeaderAction>
+            <button class="btn btn-secondary">
+                <i class="fas fa-download"></i>Exportar
+            </button>
+        </HeaderAction>
+        <ChildContent>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:40px;"><input type="checkbox" /></th>
+                            <th>Deudor</th>
+                            <th>Contacto</th>
+                            <th>Deuda</th>
+                            <th>Estado</th>
+                            <th>Último contacto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    @foreach (var debtor in deudores)
+                    {
+                        <tbody>
+                            <DebtorRow Item="@debtor" />
+                        </tbody>
+                    }
+                </table>
+            </div>
+        </ChildContent>
+    </Card>
+</div>
 
 @code {
+    public List<Deudor> deudores = new();
 
+    protected override void OnInitialized()
+    {
+        var deudor1 = new Deudor
+        {
+            Id = 1,
+            Name = "María Rodríguez",
+            Initials = "MR",
+            IdNumber = "#DB-4521",
+            Phone = "+1 (555) 234-5678",
+            Email = "maria.r@email.com",
+            Debt = 4850,
+            Period = "5 meses",
+            Status = "in-progress",
+            StatusText = "En Progreso",
+            Priority = "high",
+            PriorityText = "Alta Priodidad",
+            LastContact = "Hoy, 10:45 AM",
+            ContactMethod = "Llamada",
+            AvatarColor = "#ef4444"
+        };
+
+        deudor1.GenerateInvoices();
+        deudores.Add(deudor1);
+
+        var deudor2 = new Deudor
+        {
+            Id = 3,
+            Name = "Sarah Kim",
+            Initials = "SK",
+            IdNumber = "#DB-4267",
+            Phone = "+1 (555) 345-9876",
+            Email = "sarah.kim@email.com",
+            Debt = 1890,
+            Period = "2 meses",
+            Status = "not-contacted",
+            StatusText = "No Contactado",
+            Priority = "low",
+            PriorityText = "Baja Prioridad",
+            LastContact = "Nunca contactado",
+            ContactMethod = "",
+            AvatarColor = "#8b5cf6"
+        };
+
+        deudor2.GenerateInvoices();
+        deudores.Add(deudor2);
+    }
 }
