@@ -1057,6 +1057,176 @@ input:checked + .slider::before {
   font-weight: 700;
 }
 
+/* Custom Select Dropdown */
+.custom-select {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.custom-select-button {
+  width: 100;
+  padding: 10px 40px 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  text-align: left;
+  color: #1e293b;
+}
+
+.custom-select-button:hover {
+  border-color: #163370;
+  background: #f8fafc;
+}
+
+.custom-select-button::after {
+  content: "\f078";
+  font-family: "Font Awesome 7 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 12px;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.custom-select-button i {
+  color: #163370;
+  width: 18px;
+}
+
+.custom-select-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: none;
+  overflow: hidden;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.custom-select.open .custom-select-dropdown-menu {
+  display: block;
+}
+
+.custom-select-option {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.custom-select-option:hover {
+  background: #f8fafc;
+}
+
+.custom-select-option.selected {
+  background: #e8eef7;
+  color: #163370;
+}
+
+.custom-select-option i {
+  color: #163370;
+  width: 18px;
+}
+
+/* Contact Method Dropdown - Custom styling for Dropdown component used in Note.razor */
+.contact-method-dropdown {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.contact-method-dropdown .status-dropdown {
+  display: block;
+  width: 100%;
+}
+
+.contact-method-dropdown .status-button {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: auto;
+  gap: 10px;
+  text-align: left;
+  color: #1e293b;
+}
+
+.contact-method-dropdown .status-button:hover {
+  border-color: #163370;
+  background: #f8fafc;
+}
+
+.contact-method-dropdown .status-option {
+  font-size: 14px;
+  font-weight: 500;
+  gap: 10px;
+}
+
+.contact-method-dropdown .status-option i {
+  width: 18px;
+  color: #163370;
+}
+
+.contact-method-dropdown .status-option:hover {
+  background: #f8fafc;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #475569;
+  font-size: 14px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #163370;
+  box-shadow: 0 0 0 3px rgba(22, 51, 112, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
 /* Blazor Errors */
 #blazor-error-ui {
   background: lightyellow;

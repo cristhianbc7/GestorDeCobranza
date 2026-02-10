@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace GestorDeCobranza.Model
 {
@@ -18,6 +19,9 @@ namespace GestorDeCobranza.Model
         public string PriorityText { get; set; } = string.Empty;
         public string LastContact { get; set; } = string.Empty;
         public string ContactMethod { get; set; } = string.Empty;
+        public ContactMethod? ContactMethodObject { get; set; }
+        public string ContactResult { get; set; } = string.Empty;
+        public Result? ContactResultObject { get; set; }
         public string AvatarColor { get; set; } = string.Empty;
         public bool IsExpanded { get; set; }
         public List<Invoice> Invoices { get; set; } = new();
@@ -62,6 +66,18 @@ namespace GestorDeCobranza.Model
                     },
                 },
             };
+        }
+
+        public void SetContactMethod(string methodId)
+        {
+            ContactMethodObject = Model.ContactMethod.GetAllMethods()
+                .FirstOrDefault(m => m.Id == methodId) ?? Model.ContactMethod.GetAllMethods().First();
+        }
+
+        public void SetContactResult(string resultId)
+        {
+            ContactResultObject = Model.Result.GetAllResults()
+                .FirstOrDefault(r => r.Id == resultId) ?? Model.Result.GetAllResults().First();
         }
     }
 }

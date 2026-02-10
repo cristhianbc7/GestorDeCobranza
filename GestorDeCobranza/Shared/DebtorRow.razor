@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+@using System.Globalization
 <tr>
     <td><input type="checkbox" /></td>
     <td>
@@ -106,6 +106,10 @@
                     </div>
                 </div>
                 <InteractionTimeline />
+                <Note SelectedContactMethod="@Item.ContactMethodObject" 
+                      SelectedContactMethodChanged="(method) => OnContactMethodChanged(Item, method)"
+                      SelectedResult="@Item.ContactResultObject"
+                      SelectedResultChanged="(result) => OnResultChanged(Item, result)" />
             </div>
         </div>
     </td>
@@ -126,6 +130,18 @@
     {
         debtor.Status = status;
         debtor.StatusText = GetStatusText(status);
+    }
+
+    private void OnContactMethodChanged(Deudor debtor, ContactMethod method)
+    {
+        debtor.ContactMethodObject = method;
+        debtor.ContactMethod = method.Name;
+    }
+
+    private void OnResultChanged(Deudor debtor, Result result)
+    {
+        debtor.ContactResultObject = result;
+        debtor.ContactResult = result.Name;
     }
 
     private string GetStatusText(string status)

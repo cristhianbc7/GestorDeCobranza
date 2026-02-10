@@ -1,4 +1,4 @@
-﻿@page "/gestiondeudores"
+@page "/gestiondeudores"
 
 <div id="debtorsSection">
     <div class="page-header">
@@ -65,10 +65,12 @@
             Priority = "high",
             PriorityText = "Alta Priodidad",
             LastContact = "Hoy, 10:45 AM",
-            ContactMethod = "Llamada",
+            ContactMethod = "Llamada Telefónica",
             AvatarColor = "#ef4444"
         };
 
+        deudor1.SetContactMethod("phone");
+        deudor1.SetContactResult("promise");
         deudor1.GenerateInvoices();
         deudores.Add(deudor1);
 
@@ -87,10 +89,12 @@
             Priority = "low",
             PriorityText = "Baja Prioridad",
             LastContact = "Nunca contactado",
-            ContactMethod = "",
+            ContactMethod = "WhatsApp",
             AvatarColor = "#8b5cf6"
         };
 
+        deudor2.SetContactMethod("whatsapp");
+        deudor2.SetContactResult("no anwser");
         deudor2.GenerateInvoices();
         deudores.Add(deudor2);
     }
