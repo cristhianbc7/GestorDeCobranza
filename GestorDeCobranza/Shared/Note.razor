@@ -6,8 +6,8 @@
     <div class="form-group">
         <label class="form-label">Método de Contacto</label>
         <div class="contact-method-dropdown">
-            <Dropdown TItem="ContactMethod" Items="@ContactMethod.GetAllMethods()"        SelectedItem="@SelectedContactMethod"
-                      Placeholder="Seleccionar método..."                         OnItemSelected="OnContactMethodSelected">
+            <Dropdown TItem="ContactMethod" Items="@ContactMethod.GetAllMethods()" SelectedItem="@SelectedContactMethod"
+                      Placeholder="Seleccionar método..." OnItemSelected="OnContactMethodSelected">
                 <ItemTemplate>
                     <i class="@context.IconClass"></i>
                     <span>@context.Name</span>
@@ -35,10 +35,6 @@
         <i class="fas fa-save"></i>
         <span>Guardar Nota</span>
     </button>
-</div>
-
-<div class="expanded-grid" style="margin-top: 24px;">
-
 </div>
 
 @code {

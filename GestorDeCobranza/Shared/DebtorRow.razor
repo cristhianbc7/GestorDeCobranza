@@ -37,7 +37,7 @@
     </td>
     <td>
         <Dropdown TItem="string" Items="@statusOptions" Placeholder="Seleccionar estado" SelectedItem="@Item.Status"
-            OnItemSelected="(status) => OnStatusSelectedForDebtor(Item, status)">
+                  OnItemSelected="(status) => OnStatusSelectedForDebtor(Item, status)">
             <ItemTemplate Context="status">
                 @GetStatusText(status)
             </ItemTemplate>
@@ -84,36 +84,37 @@
                         <div>
                             <div style="font-size: 13px; color:#64748b;">Deuda Total</div>
                             <div style="font-size: 24px; font-weight: 700; color:#163370">$@Item.Debt.ToString("N2", new
-                                                            CultureInfo("en-US"))</div>
+                                                                                            CultureInfo("en-US"))</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 13px; color:#64748b;">Monto Original</div>
+                                <div style="font-size: 24px; font-weight: 700; color:#64748b;">$@((Item.Debt *
+                                                                                                0.85).ToString("N2", new CultureInfo("en-US")))</div>
+                                </div>
+                            </div>
+                            <div
+                                style="font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-info-circle"></i>
+                                <span>FACTURAS PENDIENTES (Click para ver detalles)</span>
+                            </div>
+                            <div class="invoice-list">
+                                @foreach (var invoice in Item.Invoices)
+                                {
+                                    <InvoiceDetail Item="@invoice" isOpen="invoice == facturaAbierta"
+                                                   OnToggleRequested="HandleInvoiceAccordion" />
+                                }
+                            </div>
                         </div>
-                        <div>
-                            <div style="font-size: 13px; color:#64748b;">Monto Original</div>
-                            <div style="font-size: 24px; font-weight: 700; color:#64748b;">$@((Item.Debt *
-                                                            0.85).ToString("N2", new CultureInfo("en-US")))</div>
-                        </div>
-                    </div>
-                    <div
-                        style="font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-info-circle"></i>
-                        <span>FACTURAS PENDIENTES (Click para ver detalles)</span>
-                    </div>
-                    <div class="invoice-list">
-                        @foreach (var invoice in Item.Invoices)
-                        {
-                            <InvoiceDetail Item="@invoice" isOpen="invoice == facturaAbierta"
-                                OnToggleRequested="HandleInvoiceAccordion" />
-                        }
+                        <InteractionTimeline />
+                        <Note SelectedContactMethod="@Item.ContactMethodObject"
+                              SelectedContactMethodChanged="(method) => OnContactMethodChanged(Item, method)"
+                              SelectedResult="@Item.ContactResultObject"
+                              SelectedResultChanged="(result) => OnResultChanged(Item, result)" />
+                        <Remainder />
                     </div>
                 </div>
-                <InteractionTimeline />
-                <Note SelectedContactMethod="@Item.ContactMethodObject" 
-                      SelectedContactMethodChanged="(method) => OnContactMethodChanged(Item, method)"
-                      SelectedResult="@Item.ContactResultObject"
-                      SelectedResultChanged="(result) => OnResultChanged(Item, result)" />
-            </div>
-        </div>
-    </td>
-}
+            </td>
+        }
 
 @code {
     [Parameter]
